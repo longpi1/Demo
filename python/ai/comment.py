@@ -3,7 +3,8 @@ from moviepy.editor import VideoFileClip
 import os
 import re
 
-# 步骤1：从视频中提取帧并创建GIF
+# 步骤1：从视频中提取帧并创建GIF，目前暂时通过start_time，end_time写死获取需要采集的帧
+# todo 哪个片段应该被采集，按照规则还是模型判断？ 规则类似于弹幕的数量分布判断是否为热点？可以尝试两者结合？
 def extract_frames_and_make_gif(video_path, gif_path, start_time, end_time, fps=1):
     # 加载视频并选择开始时间和结束时间之间的子剪辑
     clip = VideoFileClip(video_path).subclip(start_time, end_time)
@@ -11,6 +12,7 @@ def extract_frames_and_make_gif(video_path, gif_path, start_time, end_time, fps=
     clip.write_gif(gif_path, fps=fps)
 
 # 步骤2：使用关键词对GIF进行索引（这里，我们简单地使用文件名作为关键词）
+# todo 通过模型去生成与识别关键词
 def index_gif_with_keyword(gif_path, keyword):
     # 假设我们使用一个字典来存储从关键词到GIF路径的映射
     gif_index = {}
@@ -18,8 +20,9 @@ def index_gif_with_keyword(gif_path, keyword):
     return gif_index
 
 # 步骤3：存储GIF和关键词之间的映射
-# 这里，我们直接使用上面的字典，但在实际应用中，可能需要持久性存储，例如数据库
+# todo 这里，我们直接使用上面的字典，但在实际应用中，需要数据库持久性存储
 # 步骤4：实现用户评论中的关键词检测
+# todo 这里是否引入模型做一个综合的打分，类似文字相似性模型等，对整个评论做一个评判
 def detect_keywords_in_comment(comment, gif_index):
     # 将评论分割成单词
     words = comment.split()
@@ -49,7 +52,7 @@ gif_path = 'example.gif'
 start_time = 10  # 开始时间（秒）
 end_time = 20  # 结束时间（秒）
 
-# 从视频中提取帧并创建GIF
+# 从视频中提取帧并创建GIF,
 extract_frames_and_make_gif(video_path, gif_path, start_time, end_time)
 
 # 使用关键词索引GIF
